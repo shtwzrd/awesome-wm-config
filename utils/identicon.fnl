@@ -1,4 +1,4 @@
-(local awful (require "awful"))
+(local lawful (require "api.lawful"))
 (local xresources (require "beautiful.xresources"))
 (local dpi xresources.apply_dpi)
 (local lume (require "vendor.lume"))
@@ -68,13 +68,13 @@
  Use DIMENSION as a size hint.
  If ?COLOR-LIST? is provided, restrict output to that palette"
   (let [filename (.. str ".svg")
-        filepath (.. (awful.util.get_cache_dir) "/" filename)
+        filepath (.. (lawful.fs.cache-dir) filename)
         exists (io.open filepath :r)]
     (if (= exists nil)
         (with-open [outfile (io.open filepath :w)]
           (let [svg (identicon.generate-svg str squares dimension ?color-list?)]
             (outfile:write svg)))
         (exists:close))
-    filepath))
+    (lawful.img.load-svg filepath dimension dimension)))
 
 identicon

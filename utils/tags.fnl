@@ -16,13 +16,13 @@
   "Create a new tag on ?SCR or focused screen with ?LAYOUT. 
 Passthrough ?PROPS will merge, overwriting the defaults"
   (let [s (or ?scr (awful.screen.focused))
-        id (os.clock)] ; unique, sequential name for filtering/sorting purposes
+        id (.. (os.time) "-" (os.clock))] ; sequential name for filter/sort
     (awful.tag.add
      id 
      (lume.merge
       {:screen s
        :layout (or ?layout awful.layout.suit.tile)
-       :icon (identicon.create id 5 256)
+       :icon (identicon.create id 5 128)
        :selected true
        :gap beautiful.useless_gap}
       (or ?props {})))))

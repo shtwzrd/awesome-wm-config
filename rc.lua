@@ -1,11 +1,12 @@
 -- force load vendored fennel file instead of any system fennel
 originalPath = package.path
-package.path = ".config/awesome/?.lua"
+cfgDir = os.getenv("HOME") .. "/.config/awesome/"
+package.path = cfgDir .. "?.lua"
 fennel = require("fennel")
 -- and revert to original package.path
 package.path = originalPath
 
-fennel.path = fennel.path .. ";.config/awesome/?.fnl;.config/awesome/?/init.fnl"
+fennel.path = fennel.path .. ";" .. cfgDir .. "?.fnl;" .. cfgDir .. "?/init.fnl"
 
 searcher = fennel.makeSearcher({
     correlate = true,

@@ -1,4 +1,7 @@
 (require "patches.fix-snid")
+(local lgi (require :lgi))
+(local cairo lgi.cairo)
+(local rsvg lgi.Rsvg)
 (local awful (require :awful))
 (local naughty (require :naughty))
 (local gears (require :gears))
@@ -10,6 +13,7 @@
 (var lawful {:ext {}
              :geo awful.placement ;; passthrough
              :fs {}
+             :img {}
              :notify {}})
 
 (fn lawful.fs.home-dir []
@@ -20,6 +24,16 @@
 
 (lambda lawful.fs.icon-dir []
   (.. (lawful.fs.home-dir) "/.cache/awesome/icons/"))
+
+(lambda lawful.img.load-svg [svg-file-name width height]
+  (let [surf (cairo.ImageSurface cairo.Format.ARGB32 width height)
+        cr (cairo.Context surf)
+        handle (assert (rsvg.Handle.new_from_file svg-file-name))
+        dim (handle:get_dimensions)
+        aspect (math.min (/ width dim.width) (/ height dim.height))]
+    (cr:scale aspect aspect)
+    (handle:render_cairo cr)
+    surf))
 
 (lambda lawful.notify.msg [?message ?args]
   (let [args (or ?args {})
