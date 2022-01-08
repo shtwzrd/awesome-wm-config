@@ -1,3 +1,14 @@
+-- add guix lua packages to package.path
+guixEnv = os.getenv("GUIX_ENVIRONMENT")
+if guixEnv then
+    package.path = package.path .. ";" .. guixEnv .. "/share/lua/5.1/?.lua" ..
+                   ";" .. guixEnv .. "/share/lua/5.1/?/init.lua" ..
+                   ";" .. guixEnv .. "/lib/lua/5.1/?.lua" ..
+                   ";" .. guixEnv .. "/lib/lua/5.1/?/init.lua"
+
+    package.cpath = package.cpath .. ";" .. guixEnv .. "/lib/lua/5.1/?.so"
+end
+
 -- force load vendored fennel file instead of any system fennel
 originalPath = package.path
 cfgDir = os.getenv("HOME") .. "/.config/awesome/"
