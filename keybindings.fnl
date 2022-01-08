@@ -8,6 +8,7 @@
 (local wincmd (require "commands.window"))
 (local tagcmd (require "commands.tag"))
 (local defhydra (require "features.hydra"))
+(local {: spawn-nrepl : kill-nrepl } (require "features.nrepl"))
 (local {: notify} (require :api.lawful))
 
 (local layouts awful.layout.suit)
@@ -81,6 +82,8 @@
    (input.key-group
     "exec"
     [[:mod] :space (fn [] (awful.util.spawn "rofi -show run")) "app launcher"]
+    [[:mod :shift] :n (fn [] (spawn-nrepl)) "spawn nrepl"]
+    [[:mod :shift] :z (fn [] (kill-nrepl)) "kill nrepl"]
     [[:mod] :e (fn [] (awful.util.spawn "emacsclient -c -n -e '(switch-to-buffer nil)'")) "emacs"]
     [[:mod] :v (fn []
                  (let [option "gopass ls --flat"
@@ -122,9 +125,9 @@
   (gears.table.join
    (input.key-group
     "client"
-    [[:mod] :n wincmd.minimize "minimize"]
+    [[:mod] :m wincmd.minimize "minimize"]
     [[:mod] :t wincmd.toggle-ontop "⏼ keep on top"]
-    [[:mod] :m wincmd.toggle-maximized "⏼ maximize"]
+    [[:mod :shift] :M wincmd.toggle-maximized "⏼ maximize"]
     [[:mod] :f wincmd.toggle-fullscreen "⏼ fullscreen"]
     [[:mod :ctrl] :space awful.client.floating.toggle "⏼ floating"]
     [[:mod :ctrl] :Return wincmd.move-to-master "move to master"]
