@@ -19,6 +19,9 @@
 (fn lawful.fs.home-dir []
   (os.getenv "HOME"))
 
+(lambda lawful.fs.config-dir []
+  (.. (lawful.fs.home-dir) "/.config/awesome/"))
+
 (lambda lawful.fs.cache-dir []
   (.. (lawful.fs.home-dir) "/.cache/awesome/"))
 
