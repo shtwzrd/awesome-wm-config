@@ -8,8 +8,9 @@
 (local wincmd (require "commands.window"))
 (local tagcmd (require "commands.tag"))
 (local defhydra (require "features.hydra"))
-(local {: spawn-nrepl : kill-nrepl } (require "features.nrepl"))
+(local {: spawn-nrepl : kill-nrepl } (require :features.nrepl))
 (local {: notify} (require :api.lawful))
+(local titlebar (require :features.titlebar))
 
 (local layouts awful.layout.suit)
 
@@ -77,6 +78,7 @@
     "awesome"
     [[:mod] :s hotkeys_popup.show_help "show help"]
     [[:mod :shift] :r awesome.restart "reload config"]
+    [[:mod :shift] :t titlebar.toggle "⏼ titlebars"]
     )
 
    (input.key-group

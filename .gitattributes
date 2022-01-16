@@ -1,3 +1,2 @@
-# Tell linguist what how to understand the repo
-*.fnl linguist-language=Fennel
 vendor/* linguist-vendored
+fennel.lua linguist-vendored
