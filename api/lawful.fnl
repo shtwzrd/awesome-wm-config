@@ -12,6 +12,7 @@
 
 (var lawful {:ext {}
              :geo awful.placement ;; passthrough
+             :util {:join join}
              :fs {}
              :img {}
              :notify {}})
