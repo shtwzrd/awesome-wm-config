@@ -357,7 +357,7 @@
                          (set c.border_color beautiful.border_focus)))
 (client.connect_signal "unfocus" (fn [c] (set c.border_color beautiful.border_normal)))
 
-(tset beautiful :wallpaper (.. (gears.filesystem.get_xdg_config_home) "/wallpaper"))
+(tset beautiful :wallpaper (.. (os.getenv "HOME") "/.wallpaper"))
 (wallpaper.enable)
 (workspaces.enable)
 (persistence.enable)
