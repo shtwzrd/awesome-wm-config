@@ -14,6 +14,6 @@ stop:
 	kill `pgrep Xephyr` >/dev/null 2>&1
 
 test:
-	LUA_PATH=${lua_path} ./fennel-0.8.1 --correlate --metadata test/init.fnl
+	LUA_PATH=${lua_path} ./fennel --correlate --metadata test/init.fnl
 
 .PHONY: run stop test

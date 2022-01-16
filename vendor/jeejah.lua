@@ -1,5 +1,5 @@
 local socket = require "socket"
-local bencode = require "vendor.bencode"
+local bencode = require "bencode"
 
 local load = loadstring or load
 
@@ -328,7 +328,7 @@ return {
       if(opts.serialize) then
          serializer = opts.serialize
       else
-          local serpent = require("vendor.serpent")
+          local serpent = require("serpent")
           local serpent_pp = function(x)
               local serpent_opts = {maxlevel=8,maxnum=64,nocode=true}
               return serpent.block(x, serpent_opts)
@@ -337,7 +337,7 @@ return {
       end
       if(opts.timeout) then timeout = tonumber(opts.timeout) end
       if(opts.fennel) then
-         local fenneleval = require("vendor.jeejah.fenneleval")
+         local fenneleval = require("jeejah.fenneleval")
          opts.handlers.eval = fenneleval
          opts.handlers.stdin = fenneleval
       end

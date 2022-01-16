@@ -9,10 +9,15 @@ if guixEnv then
     package.cpath = package.cpath .. ";" .. guixEnv .. "/lib/lua/5.1/?.so"
 end
 
+cfgDir = os.getenv("HOME") .. "/.config/awesome/"
+
+-- add the vendor dir
+package.path = package.path .. ";" .. cfgDir .. "/vendor/?.lua"
+package.path = package.path .. ";" .. cfgDir .. "/vendor/?/?.lua"
+
 -- force load vendored fennel file instead of any system fennel
 originalPath = package.path
-cfgDir = os.getenv("HOME") .. "/.config/awesome/"
-package.path = cfgDir .. "?.lua"
+-- package.path = cfgDir .. "?.lua"
 fennel = require("fennel")
 -- and revert to original package.path
 package.path = originalPath
