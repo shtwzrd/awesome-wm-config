@@ -1,5 +1,4 @@
 (local t (require "vendor.lunatest"))
-(local pp (require "fennelview"))
 (local icon-loader (require "icons.loader"))
 (local tabler-icons (require "icons.tabler"))
 

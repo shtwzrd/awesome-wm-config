@@ -76,7 +76,7 @@
 ;; Variable definitions
 
 ;; This is used later as the default terminal and editor to run.
-(var terminal "kitty")
+(var terminal "xterm")
 (var editor (or (os.getenv "EDITOR") "emacs"))
 (var editor_cmd editor)
 
@@ -334,7 +334,7 @@
 
 (deffamiliar {:name :terminal
               :key [[:mod] :g]
-              :command "kitty"
+              :command "xterm"
               :placement :left
               :screen-ratio 0.33})
 

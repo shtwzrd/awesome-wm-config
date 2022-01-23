@@ -1,4 +1,4 @@
-(local pp (require "fennelview"))
+(local pp (require "fennel.view"))
 (local lume (require "vendor.lume"))
 (local {: concat : range : fill } (require "utils.oleander"))
 (local m {})

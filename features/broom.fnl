@@ -16,7 +16,7 @@
 ;; maximum integration and customization.
 
 (local {: ext : geo : notify} (require :api.lawful))
-(local pp (require :fennelview))
+(local pp (require :fennel.view))
 (import-macros {: async : await } :utils.async)
 (local {: concat } (require :utils.oleander))
 (local xresources (require :beautiful.xresources))

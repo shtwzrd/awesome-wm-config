@@ -1,5 +1,5 @@
 (local t (require "vendor.lunatest"))
-(local pp (require "fennelview"))
+(local pp (require "fennel.view"))
 (local xml (require "utils.xml"))
 (local lume (require "vendor.lume"))
 

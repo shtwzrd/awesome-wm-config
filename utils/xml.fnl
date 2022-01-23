@@ -4,17 +4,15 @@
 ;; hiccup-inspired library for creating XML from Fennel tables 
 (local xml {})
 
-(fn xml.escape
-  [str]
-  "Substitute XML special characters with their escape sequences."
-  (-> (or str "")
-      (string.gsub "&" "&amp;")
-      (string.gsub "<" "&lt;")
-      (string.gsub ">" "&gt;")
-      (string.gsub "\"" "&quot;")))
+(fn xml.escape [str]
+ "Substitute XML special characters with their escape sequences."
+ (-> (or str "")
+     (string.gsub "&" "&amp;")
+     (string.gsub "<" "&lt;")
+     (string.gsub ">" "&gt;")
+     (string.gsub "\"" "&quot;")))
 
-(fn xml.format-attr
-  [key value]
+(fn xml.format-attr [key value]
   "Transform key-value pair into pair of attribute-value strings."
   (match value
     true [key "true"]
@@ -22,8 +20,7 @@
     nil nil
     _ [key (xml.escape value)]))
 
-(fn xml.render-attrs
-  [attrs]
+(fn xml.render-attrs [attrs]
   "Turn a map into a string of XML attributes."
   (var str "")
   (when attrs
@@ -33,8 +30,7 @@
           (set str (.. str " " k "=\"" v "\""))))))
   str)
 
-(lambda xml.create-element
-  [tag ?attrs ...]
+(lambda xml.create-element [tag ?attrs ...]
   "Render TAG with attributes ?ATTRS and restargs as children."
   (..
    "<" tag (xml.render-attrs ?attrs) ">"

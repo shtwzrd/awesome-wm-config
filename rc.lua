@@ -15,12 +15,7 @@ cfgDir = os.getenv("HOME") .. "/.config/awesome/"
 package.path = package.path .. ";" .. cfgDir .. "/vendor/?.lua"
 package.path = package.path .. ";" .. cfgDir .. "/vendor/?/?.lua"
 
--- force load vendored fennel file instead of any system fennel
-originalPath = package.path
--- package.path = cfgDir .. "?.lua"
 fennel = require("fennel")
--- and revert to original package.path
-package.path = originalPath
 
 fennel.path = fennel.path .. ";" .. cfgDir .. "?.fnl;" .. cfgDir .. "?/init.fnl"
 

@@ -1,5 +1,5 @@
 (local t (require "vendor.lunatest"))
-(local pp (require "fennelview"))
+(local pp (require "fennel.view"))
 (local hotfuzz (require "utils.hotfuzz"))
 (local lume (require "vendor.lume"))
 
