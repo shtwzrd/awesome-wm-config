@@ -129,7 +129,8 @@ end
 
 local describe = function(msg, handlers)
    local ops = { "clone", "close", "describe", "eval", "load-file",
-                 "ls-sessions", "complete", "stdin", "interrupt" }
+                 "lookup", "ls-sessions", "complete", "completions", "stdin",
+                 "interrupt" }
    for op in handlers do table.insert(ops, op) end
    return response_for(msg, {ops=ops, status={"done"}})
 end
@@ -141,12 +142,12 @@ local session_for = function(conn, msg, sandbox)
    return s
 end
 
-local complete = function(msg, sandbox)
+local find_completions = function(input, libs, sandbox)
    local clone = function(t)
       local n = {} for k,v in pairs(t) do n[k] = v end return n
    end
    local top_ctx = clone(sandbox or _G)
-   for k,v in pairs(msg.libs or {}) do
+   for k,v in pairs(libs or {}) do
       top_ctx[k] = require(v:sub(2,-2))
    end
 
@@ -168,10 +169,25 @@ local complete = function(msg, sandbox)
       end
    end
    local input_parts = {}
-   for i in string.gmatch(msg.input, "([^.%s]+)") do
+   for i in string.gmatch(input, "([^.%s]+)") do
       table.insert(input_parts, i)
    end
-   return response_for(msg, {completions = cpl_for(input_parts, top_ctx)})
+   return cpl_for(input_parts, top_ctx)
+end
+
+
+local complete = function(msg, sandbox)
+   local candidates = find_completions(msg.input, msg.libs, sandbox)
+   return response_for(msg, {completions = candidates})
+end
+
+local completions = function(msg, sandbox)
+   local candidates = find_completions(msg.prefix, nil, sandbox)
+   local result = {}
+   for _, v in pairs(candidates) do
+      table.insert(result, {candidate = v})
+   end
+   return response_for(msg, {completions = result})
 end
 
 -- see https://github.com/clojure/tools.nrepl/blob/master/doc/ops.md
@@ -204,6 +220,10 @@ local handle = function(conn, handlers, sandbox, msg)
       local session_ids = {}
       for id in pairs(sessions) do table.insert(session_ids, id) end
       send(conn, response_for(msg, {sessions=session_ids, status={"done"}}))
+   elseif(msg.op == "completions") then
+      d("Completions", msg.input)
+      local session_sandbox = session_for(conn, msg, sandbox).sandbox
+      send(conn, completions(msg, session_sandbox))
    elseif(msg.op == "complete") then
       d("Complete", msg.input)
       local session_sandbox = session_for(conn, msg, sandbox).sandbox
@@ -340,6 +360,8 @@ return {
          local fenneleval = require("jeejah.fenneleval")
          opts.handlers.eval = fenneleval
          opts.handlers.stdin = fenneleval
+         opts.handlers.lookup = fenneleval
+         opts.handlers.completions = fenneleval
       end
       assert(not opts.sandbox or setfenv, "Can't use sandbox on 5.2+")
 

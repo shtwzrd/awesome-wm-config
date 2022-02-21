@@ -1,6 +1,6 @@
 local fennel = require("fennel")
-local fennelview_ok, fennelview = pcall(require, "fennelview")
-if not fennelview_ok then fennelview = fennel.dofile("fennelview.fnl") end
+-- fall back to pre-0.8.0 if necessary
+local fennelview = fennel.view or require("fennelview")
 
 local d = os.getenv("DEBUG") and print or function(_) end
 
@@ -57,9 +57,9 @@ local make_repl = function(session, repls)
 end
 
 return function(conn, msg, session, send, response_for)
-   d("Evaluating", msg.code)
    local repl = repls[session.id] or make_repl(session, repls)
    if msg.op == "eval" then
+      d("Evaluating", msg.code)
       session.values = function(xs)
          send(conn, response_for(msg, {value=table.concat(xs, "\n") .. "\n"}))
       end
@@ -71,7 +71,50 @@ return function(conn, msg, session, send, response_for)
       end
       repl(msg.code .. "\n")
    elseif msg.op == "stdin" then
+      d("Evaluating", msg.code)
       repl(msg.stdin,
            function() send(conn, response_for(msg, {status={"done"}})) end)
+   elseif msg.op == "completions" then
+      d("Completions", msg.prefix)
+      session.values = function(xs)
+         local result = {}
+         for _, v in pairs(xs) do
+             table.insert(result, {candidate = v})
+         end
+         send(conn, response_for(msg, {completions = result}))
+      end
+      session.done = function()
+         send(conn, response_for(msg, {status={"done"}}))
+      end
+      session.needinput = function()
+         send(conn, response_for(msg, {status={"need-input"}}))
+      end
+      repl(",complete " .. msg.prefix .. "\n")
+   elseif msg.op == "lookup" then
+      d("Lookup", msg.sym)
+      session.values = function(xs)
+         if #xs == 0 or
+            string.find(xs[1], "#<undocumented>") or
+            xs[1] == msg.sym .. " not found" then
+              -- nREPL spec has no error-signalling for this, just empty map
+              send(conn, response_for(msg, {info = {}}))
+         else
+            local i = string.find(xs[1], "\n")
+            local top_line = string.sub(xs[1], 1, i)
+            local j = string.find(top_line, " ") + 1
+            local k = string.find(top_line, "%)") - 1
+            local info = {name = msg.sym,
+                          arglists = "([" .. string.sub(top_line, j, k) .. "])",
+                          doc = string.sub(xs[1], i + 1)}
+            send(conn, response_for(msg, {info = info}))
+         end
+      end
+      session.done = function()
+         send(conn, response_for(msg, {status={"done"}}))
+      end
+      session.needinput = function()
+         send(conn, response_for(msg, {status={"need-input"}}))
+      end
+      repl(",doc " .. msg.sym .. "\n")
    end
 end
